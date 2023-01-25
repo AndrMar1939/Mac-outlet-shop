@@ -9,10 +9,6 @@ const maxAmountOfItems = 1333;
 // render ONE card function
 
 const renderCard = (item) => {
-    // counter of like btn clicks
-    let counterOfClicks = 1;
-
-
 
     // define orders info and add coma to orders info number
     function calculationOrdersNumber (item) {
@@ -68,7 +64,10 @@ const renderCard = (item) => {
     }
 
     // event click for like button
-   likeOfProduct.onclick = function (event) {
+
+    let counterOfClicks = 1;
+
+    likeOfProduct.onclick = function (event) {
         counterOfClicks++;
         event.stopPropagation();
         likeOfProduct.classList.toggle('active'); 
@@ -77,8 +76,7 @@ const renderCard = (item) => {
             item.favorite = true;
         } else {
             delete item.favorite; 
-        }
-    
+        }    
     }
    
     return productCard;
@@ -92,31 +90,6 @@ const renderCards = (items) => {
     return containerForCards.append(...cardsCollection);
 }
 renderCards(items);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// let x = renderCard(item);   
-
-// let y = renderCard(item);   
-// containerForCards.append(x);
-// containerForCards.append(y);
-
-
-
 
 
 
