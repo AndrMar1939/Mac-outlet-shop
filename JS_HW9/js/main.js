@@ -165,6 +165,7 @@ class RenderCards {
                     <button class="product-card__btn modal-window">Add to cart</button>
                 </div>
             `
+            // btn addToCart style in modal
             const btnModal = modalWindow.querySelector('.product-card__btn')
             if (item.orderInfo.inStock === 0) {
                 btnModal.classList.add("empty");
