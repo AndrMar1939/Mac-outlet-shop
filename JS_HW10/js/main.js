@@ -41,9 +41,82 @@ class ItemsList {
     constructor () {
         this.items = items.map(item => new Item(item));
     }
+    // find 
+    findItems(filter) {
+        let result = this.items;
+        
+        for (let key in filter) {
+            if (key === "name") {
+                result = result.filter(item => item.name.toLowerCase().includes(filter[key].toLowerCase()));
+            }          
+        }
+        for (let key in filter) {
+            if (key === "color" && filter[key].length !== 0) {
+                result = result.filter(item => {
+                    for (let ch of filter[key]) {
+                        if (item.color.includes(ch)){
+                            return item;
+                        }
+                    }  
+                })
+            }          
+        }
+        for (let key in filter) {
+            if (key === "storage" && filter[key].length !== 0) {
+                result = result.filter(item => {
+                    if (filter[key].includes(item.storage)) {
+                        return item;
+                    }
+                })
+            }          
+        }
+        for (let key in filter) {
+            if (key === "os" && filter[key].length !== 0) {
+                result = result.filter(item => {
+                    if (filter[key].includes(item.os)) {
+                        return item;
+                    }
+                })
+            }          
+        }
+        
+        
 
-    findByName(nameOfItem) {
-        return this.items.filter(item => item.name.toLowerCase().includes(nameOfItem.toLowerCase()));
+        return result;
+    }
+
+
+    get availableColors() {
+        return Array.from(new Set(this.items
+            .reduce((acc, item) => [...acc, ...item.color], []))).sort();
+    }
+
+    get availableStorage() {
+        return this.items
+            .map(item => item.storage)
+            .filter((item, index, arr) => arr.indexOf(item) === index && item !== null)
+            .sort((a, b) => {return a - b});
+    }
+
+    get availableOs() {
+        return this.items
+            .map(item => item.os)
+            .filter((item, index, arr) => arr.indexOf(item) === index && item !== null)
+            .sort((a, b) => {return a - b});
+    }
+
+    get availableDisplay() {
+        return this.items
+            .map(item => item.display)
+            .filter((item, index, arr) => arr.indexOf(item) === index && item !== null)
+            .sort((a, b) => {return a - b});
+    }
+
+    get availablePrice() {
+        return this.items
+            .map(item => item.price)
+            .filter((item, index, arr) => arr.indexOf(item) === index && item !== null)
+            .sort((a, b) => {return a - b});
     }
 
 }
@@ -165,10 +238,11 @@ class RenderCards {
                     <button class="product-card__btn modal-window">Add to cart</button>
                 </div>
             `
-            // btn addToCart style
+            // btn addToCart style in modal
+            const btnModal = modalWindow.querySelector('.product-card__btn')
             if (item.orderInfo.inStock === 0) {
-                btn.classList.add("empty");
-                btn.disabled = true;   
+                btnModal.classList.add("empty");
+                btnModal.disabled = true;                  
             }
         }
 
@@ -188,26 +262,162 @@ class RenderCards {
     }
     
 }
-// ______________________________________________________________________accordion toggle animation______________________________________________
 
 
-class AccordionAnimation {
-    constructor(){
-        this.accordionBtn = document.querySelectorAll('.accordion-btn');
-        this.toggleAnimation();
+// ____________________________________________________________________________________set_FILTERS
+class Filter {
+    #itemsList = null;
+    #renderCards = null;
+    constructor(itemsList, renderCards) {
+        this.name = '';
+        this.sort = 'default';
+        this.color = [];
+        this.storage = [];
+        this.price = [];
+        this.os = [];
+        this.display = [];
+        this.#itemsList = itemsList;
+        this.#renderCards = renderCards;
     }
 
-    toggleAnimation () {
-        this.accordionBtn.forEach(element => 
-        element.addEventListener('click', () => {
-            const accordionContent = element.nextElementSibling;
-            const arrowBtn = element.querySelector('.accordion-btn__arrow')
+    setFilter(key, value) {
+        if (!Array.isArray(this[key])) {
+            this[key] = value;
+            this.#findAndRerender();
+            // console.log("not array")
+            return;
+        }
 
-            
-            element.classList.toggle('active');
+        if (this[key].includes(value)) {
+            this[key] = this[key].filter(val => val !== value);
+        } else {
+            this[key].push(value);
+        }
+        console.log(this)
+        this.#findAndRerender();
+        
+    }
+
+    #findAndRerender() {
+        
+        const items = this.#itemsList.findItems(filter);
+        console.log(items, "items test list")
+        this.#renderCards.renderCards(items);
+    }
+}
+
+// _______________________________________________________________________________________________-render filters
+class RenderFilters {
+    #filter = null;
+    constructor(itemsList, filter) {
+        this.#filter = filter;
+        this.accordionContainer = document.querySelector('.accordion');
+        this.filterOptions = [
+            {
+                displayName: 'Price',
+                name: 'price',
+                options: itemsList.availablePrice,
+            },
+            {
+                displayName: 'Color',
+                name: 'color',
+                options: itemsList.availableColors,
+            },
+            {
+                displayName: 'Memory',
+                name: 'storage',
+                options: itemsList.availableStorage,
+            },
+            {
+                displayName: 'OS',
+                name: 'os',
+                options: itemsList.availableOs,
+            },
+            {
+                displayName: 'Display',
+                name: 'display',
+                options: itemsList.availableDisplay,
+            },
+        ];
+
+        // input find by name
+        this.inputName = document.getElementById('search');
+        
+        this.inputName.oninput = (event) => {
+            const { value } = event.target;
+            this.#filter.setFilter('name', value);
+        }
+
+        
+        // this.selectSort = document.querySelector('.search-area__sort')
+
+        // this.selectSort.onchange = (event) => {
+        //     const { value } = event.target;
+        //     this.#filter.setFilter('sort', value);
+        // }
+
+        this.renderFilters(this.filterOptions);
+    }
+
+
+
+    // _______________________________________________render filter 
+    renderFilter(optionsData) {
+        const accordionBtn = document.createElement('div');
+        accordionBtn.className = 'accordion-btn';
+        accordionBtn.innerHTML = `
+            <h2>${optionsData.displayName}</h2><img class="accordion-btn__arrow"src="img/arrow_left.svg" alt="arrow">
+        `;
+        
+        this.accordionContainer.append(accordionBtn);
+
+
+        const accordionContent = document.createElement('div');
+        accordionContent.className = 'accordion-content';
+        
+        
+        const optionsElements = optionsData.options.map(option => {
+            const filterOption = document.createElement('label');
+            const checkbox = document.createElement('input');
+            const checkboxName = document.createElement('span');
+
+            checkbox.type = 'checkbox';
+            checkbox.value = option;
+            checkboxName.innerHTML = `${option}`;
+
+            checkbox.onchange = () => {
+                this.#filter.setFilter(optionsData.name, option);
+                // console.log('checkbox')
+            }
+            filterOption.appendChild(checkbox);
+            filterOption.appendChild(checkboxName);
+
+            return filterOption;
+        })
+
+        accordionContent.append(...optionsElements);
+        this.accordionContainer.append(accordionContent);
+
+        // ___________________animation accordion
+
+        accordionBtn.addEventListener('click', () => {
+            const arrowBtn = accordionBtn.querySelector('.accordion-btn__arrow');            
+            accordionBtn.classList.toggle('active');
             accordionContent.classList.toggle('active');
             arrowBtn.classList.toggle('active');
-            }))
+        })
+
+    }
+
+
+
+    // ______________________render filters
+    renderFilters() {
+        this.accordionContainer.innerHTML = '';
+
+        const filtersElements = this.filterOptions.map(optionData => this.renderFilter(optionData));
+        
+        return filtersElements;  
     }
 }
 
@@ -217,5 +427,14 @@ const itemsList = new ItemsList;
  
 const renderCards = new RenderCards(itemsList);
 
+const filter = new Filter(itemsList, renderCards);
 
-const accordionToggleAnimation = new AccordionAnimation;    
+const renderFilter = new RenderFilters(itemsList, filter);
+
+
+// console.log(itemsList.availableColors) 
+// console.log(itemsList.availableStorage) 
+// console.log(itemsList.availableOs) 
+// console.log(itemsList.availableDisplay) 
+// console.log(renderFilter.filterOptions) 
+// console.log(filter)
