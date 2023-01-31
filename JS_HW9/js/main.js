@@ -165,10 +165,11 @@ class RenderCards {
                     <button class="product-card__btn modal-window">Add to cart</button>
                 </div>
             `
-            // btn addToCart style
+            // btn addToCart style in modal
+            const btnModal = modalWindow.querySelector('.product-card__btn')
             if (item.orderInfo.inStock === 0) {
-                btn.classList.add("empty");
-                btn.disabled = true;   
+                btnModal.classList.add("empty");
+                btnModal.disabled = true;                  
             }
         }
 
