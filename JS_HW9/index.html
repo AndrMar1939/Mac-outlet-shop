@@ -17,6 +17,41 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- modal -->
+    <div class="modal-background">transparent text</div>
+    <div class="modal-window-container">
+        <img class="product-card__img modal-window__element-one" src="items/macbook-air.png" alt="macbook-air">
+        <div class="modal-window__element-two">
+            <h2 class="product-title modal-window">MacBook Air</h2>
+            <div class="product-footer-container modal-window">
+                <div class="product-footer-item-1 ">
+                    <p class="product-reviews">Positive reviews </p>
+                    <p>Above average</p>
+                </div>
+                <div class="product-footer-item-2">
+                    <p class="product-orders">#</p>
+                    <p>orders</p>
+                </div>
+            </div>
+            <div>
+                <p class="modal-window-product-color modal-window__element-two_paragraph"><span class="grey-text">Color:</span></p>
+                <p class="modal-window-product-OS modal-window__element-two_paragraph"><span class="grey-text">OS</span></p>
+                <p class="modal-window-product-chip modal-window__element-two_paragraph"><span class="grey-text">Chip:</span></p>
+                <p class="modal-window-product-height modal-window__element-two_paragraph"><span class="grey-text">Height:</span></p>
+                <p class="modal-window-product-width modal-window__element-two_paragraph"><span class="grey-text">Width:</span></p>
+                <p class="modal-window-product-depth modal-window__element-two_paragraph"><span class="grey-text">Depth:</span></p>
+                <p class="modal-window-product-weight modal-window__element-two_paragraph"><span class="grey-text">Weight:</span></p>
+            </div>
+
+        </div>
+        <div class="modal-window__element-three">
+            <h3 class="product-price modal-window">Price:</h3>
+            <h3 class="product-stock-status modal-window">Stock:</h3>
+            <button class="product-card__btn modal-window">Add to cart</button>
+        </div>
+    </div>
+
+    <!-- wrapper -->
     <div class="wrapper">
         <header class="header">
             <a href="index.html"><img class="logo-img" src="img/macOut.png" alt="MacOutlet"></a>
@@ -32,6 +67,7 @@
                 <img class="slider-img" src="banners/apple_tv_banner.png" alt="">
                 <!-- <button class="slider__btn product-card__btn">Add to cart</button> -->
             </div>
+            <!-- input -->
             <form class="search-area" action="#" method="#" id="form" >
                 <input type="text" id="search" class="search-area__text-input" placeholder="Enter device name...">
                 <button class="search-area__filter">
@@ -56,36 +92,23 @@
                 </button>
             </form>
             <div class="product-section">
-                <div class="accordion">menuAcc</div>
-                <div class="container-for-cards">
-                    <!-- <div class="product-card">  
-                        <div class="product-card-container">
-                            <img class="product-like" src="img/like_empty.svg" alt="like">
-                            <img class="product-card__img" src="items/macbook-air.png" alt="macbook-air">
-                            <h2 class="product-title">MacBook Air</h2>
-                            <h3 class="product-stock-status">left in stock</h3>
-                            <h3 class="product-price">Price:</h3>
-                            <button class="product-card__btn">Add to cart</button>
-                        </div>
-                        <div class="product-footer-container">
-                            <div class="product-footer-item-1">
-                                <p class="product-reviews">Positive reviews </p>
-                                <p>Above average</p>
-                            </div>
-                            <div class="product-footer-item-2">
-                                <p class="product-orders">#</p>
-                                <p>orders</p>
-                            </div>
-                        </div>
-                    </div> -->
+                <!-- accordion filters -->
+                <div class="accordion">
+                    <div class="accordion-btn"><h2>Price</h2><img class="accordion-btn__arrow"src="img/arrow_left.svg" alt="arrow"></div>
+                    <div class="accordion-content">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, minima veritatis recusandae deleniti repudiandae in quibusdam non perferendis natus commodi odit, molestiae animi earum totam voluptates id laudantium ipsum nihil.</div>
+                    <div class="accordion-btn"><h2>Color</h2><img class="accordion-btn__arrow"src="img/arrow_left.svg" alt="arrow"></div>
+                    <div class="accordion-content">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, minima veritatis recusandae deleniti repudiandae in quibusdam non perferendis natus commodi odit, molestiae animi earum totam voluptates id laudantium ipsum nihil.</div>
                 </div>
-            </div>
-
-            
+                <!-- cards  -->
+                <div class="container-for-cards">
+                    <!-- product cards -->
+                </div>
+            </div>            
         </main>
-        <footer></footer>
     </div>
+
+    <!-- scripts -->
     <script src="js/items.js"></script>
-    <script src="js/index.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
