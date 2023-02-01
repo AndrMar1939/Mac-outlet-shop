@@ -41,7 +41,7 @@ class ItemsList {
     constructor () {
         this.items = items.map(item => new Item(item));
     }
-    // find 
+    //____________________________________________________________________________find logic 
     findItems(filter) {
         let result = this.items;
         
@@ -79,8 +79,56 @@ class ItemsList {
                 })
             }          
         }
-        
-        
+        // Incorrectly. Work only one filter position with one button. Two buttons doesn't work due to 'return'
+        for (let key in filter) {
+            if (key === "display" && filter[key].length !== 0) {
+                console.log("Display")
+                result = result.filter(item => {
+                    if (filter[key] == "<5" && item.display < 5) {
+                        return item;
+                    }
+                    if (filter[key] == '5-7' && item.display >= 5 && item.display < 7) {
+                        return item;
+                    }
+                    if (filter[key] == '7-12' && item.display >= 7 && item.display < 12) {
+                        return item;
+                    }
+                    if (filter[key] == '12-16' && item.display >= 12 && item.display < 16) {
+                        return item;
+                    }
+                    if (filter[key] == '+16' && item.display >= 16) {
+                        return item;
+                    }                    
+                });               
+            }          
+        }
+
+        for (let key in filter) {
+            if (key === "from") {
+                let numMin = itemsList.availablePrice[0];
+  
+                if (key === 'from' && filter[key] > numMin) {
+                  numMin = +filter[key];  
+                  
+                }
+                result = result.filter(item => {
+                    return item.price >= numMin;
+                }) 
+            }          
+        }
+        for (let key in filter) {
+            if (key === "to") {
+                let numMax = itemsList.availablePrice[itemsList.availablePrice.length-1];
+                if (key === 'to' && filter[key] < numMax) {
+                  numMax = +filter[key];  
+ 
+                }
+                result = result.filter(item => {
+                    return item.price <= numMax;
+                }) 
+            }          
+        }
+
 
         return result;
     }
@@ -104,12 +152,11 @@ class ItemsList {
             .filter((item, index, arr) => arr.indexOf(item) === index && item !== null)
             .sort((a, b) => {return a - b});
     }
-
+ 
     get availableDisplay() {
-        return this.items
-            .map(item => item.display)
-            .filter((item, index, arr) => arr.indexOf(item) === index && item !== null)
-            .sort((a, b) => {return a - b});
+        let result = ['<5', '5-7', '7-12', '12-16', '+16'];
+        return result.filter((item, index, arr) => arr.indexOf(item) === index)
+       
     }
 
     get availablePrice() {
@@ -229,6 +276,7 @@ class RenderCards {
                         <p class="modal-window-product-width modal-window__element-two_paragraph"><span class="grey-text">Width:</span> ${item.size.width} cm</p>
                         <p class="modal-window-product-depth modal-window__element-two_paragraph"><span class="grey-text">Depth:</span> ${item.size.depth} cm</p>
                         <p class="modal-window-product-weight modal-window__element-two_paragraph"><span class="grey-text">Weight:</span> ${item.size.weight} kg</p>
+                        <p class="modal-window-product-storage modal-window__element-two_paragraph"><span class="grey-text">Memory:</span> ${item.storage} gb</p>
                     </div>
         
                 </div>
@@ -273,7 +321,8 @@ class Filter {
         this.sort = 'default';
         this.color = [];
         this.storage = [];
-        this.price = [];
+        this.from = 0;
+        this.to = Infinity;
         this.os = [];
         this.display = [];
         this.#itemsList = itemsList;
@@ -348,14 +397,8 @@ class RenderFilters {
             this.#filter.setFilter('name', value);
         }
 
-        
-        // this.selectSort = document.querySelector('.search-area__sort')
 
-        // this.selectSort.onchange = (event) => {
-        //     const { value } = event.target;
-        //     this.#filter.setFilter('sort', value);
-        // }
-
+        // this.sortFilter();
         this.renderFilters(this.filterOptions);
     }
 
@@ -375,28 +418,71 @@ class RenderFilters {
         const accordionContent = document.createElement('div');
         accordionContent.className = 'accordion-content';
         
+        if (optionsData.name !== "price") {
+            const optionsElements = optionsData.options.map(option => {
+                const filterOption = document.createElement('label');
+                const checkbox = document.createElement('input');
+                const checkboxName = document.createElement('span');
+
+                checkbox.type = 'checkbox';
+                checkbox.value = option;
+                checkboxName.innerHTML = `${option}`;
+
+                checkbox.onchange = () => {
+                    this.#filter.setFilter(optionsData.name, option);
+                    // console.log('checkbox')
+                }
+                filterOption.appendChild(checkbox);
+                filterOption.appendChild(checkboxName);
+
+                return filterOption;
+            })
+            accordionContent.append(...optionsElements);
+            this.accordionContainer.append(accordionContent);
+        } 
+        // block for price filter   
+        if (optionsData.name === "price") {
+            const filterOptionMin = document.createElement('label');
+            const filterOptionMax = document.createElement('label');
+            const inputMinNumber = document.createElement('input');
+            const inputMaxNumber = document.createElement('input');
+            const inputMinName = document.createElement('p');
+            const inputMaxName = document.createElement('p');
+            accordionContent.className = "accordion-content-input";
+            inputMinNumber.className = "accordion-content-input-number";
+            inputMaxNumber.className = "accordion-content-input-number";
         
-        const optionsElements = optionsData.options.map(option => {
-            const filterOption = document.createElement('label');
-            const checkbox = document.createElement('input');
-            const checkboxName = document.createElement('span');
-
-            checkbox.type = 'checkbox';
-            checkbox.value = option;
-            checkboxName.innerHTML = `${option}`;
-
-            checkbox.onchange = () => {
-                this.#filter.setFilter(optionsData.name, option);
-                // console.log('checkbox')
+            inputMinNumber.type = 'number';
+            inputMaxNumber.type = 'number';
+            
+            inputMinName.innerHTML = `From`;
+            inputMaxName.innerHTML = `To`;
+        
+            inputMinNumber.oninput = (event) => {
+                const { value } = event.target;
+                this.#filter.setFilter('from', value);
             }
-            filterOption.appendChild(checkbox);
-            filterOption.appendChild(checkboxName);
+            inputMaxNumber.oninput = (event) => {
+                const { value } = event.target;
+                if (Number(value) >= itemsList.availablePrice[itemsList.availablePrice.length - 1]) {
+                    event.target.value = itemsList.availablePrice[itemsList.availablePrice.length - 1];
+                }
+                this.#filter.setFilter('to', value);
+            }
+            if (Number(inputMinNumber.value) <= itemsList.availablePrice[0]) {                        
+                inputMinNumber.value = itemsList.availablePrice[0];                        
+            }
 
-            return filterOption;
-        })
 
-        accordionContent.append(...optionsElements);
-        this.accordionContainer.append(accordionContent);
+            filterOptionMin.append(inputMinName, inputMinNumber);
+            filterOptionMax.append(inputMaxName, inputMaxNumber);
+        
+            
+            
+            accordionContent.append(filterOptionMin, filterOptionMax);
+            this.accordionContainer.append(accordionContent);
+        }
+
 
         // ___________________animation accordion
 
@@ -419,6 +505,33 @@ class RenderFilters {
         
         return filtersElements;  
     }
+
+    // sort filter
+    // sortFilter() {
+    //     const formField = document.querySelector('.search-area');
+    //     const sortBtn = formField.querySelector('.search-area__sort');
+    //     const sortModal = formField.querySelector(".sortModal");
+    //     const defaultBtn = sortModal.querySelector('.default');
+    //     const ascBtn = sortModal.querySelector('.ascending');
+    //     const desBtn = sortModal.querySelector('.descending');
+
+    //     function toggleSortModal () {
+    //         sortModal.classList.toggle('Active');
+    //         console.log('clk')
+    //     }
+
+    //     sortBtn.addEventListener('click', toggleSortModal)
+    // }
+                
+
+
+
+
+        // this.selectSort.onchange = (event) => {
+        //     const { value } = event.target;
+        //     this.#filter.setFilter('sort', value);
+        // }
+    
 }
 
 
@@ -435,6 +548,6 @@ const renderFilter = new RenderFilters(itemsList, filter);
 // console.log(itemsList.availableColors) 
 // console.log(itemsList.availableStorage) 
 // console.log(itemsList.availableOs) 
-// console.log(itemsList.availableDisplay) 
+// console.log(itemsList.availableDisplayBetween) 
 // console.log(renderFilter.filterOptions) 
 // console.log(filter)

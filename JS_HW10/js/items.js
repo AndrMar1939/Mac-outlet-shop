@@ -574,7 +574,7 @@ const items = [
         category: 'Watch',
         imgUrl: 'items/apple-watch3.jpg',
         name: 'Apple Watch Series 3',
-        display: 22.1654 ,// дюймы
+        display: 2.1654 ,// дюймы
         color: [ 'Silver', 'Space Grey','Gold','Blue','Graphite'],
         price: 309, // доллары
         chip: {
