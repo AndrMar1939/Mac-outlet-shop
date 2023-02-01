@@ -45,6 +45,20 @@ class ItemsList {
     findItems(filter) {
         let result = this.items;
         
+        // sort by price
+        for (let key in filter) {
+            if (key === "sort") {               
+                if(filter[key] === 'default') {
+                    result = result.sort((a,b) => {return a.id - b.id});
+                } else if(filter[key] === 'ascending') {                    
+                    result = result.sort((a,b) => {return a.price - b.price})
+                } else if(filter[key] === 'descending') {                    
+                    result = result.sort((a,b) => {return b.price - a.price})
+                }
+            }          
+        }
+
+        
         for (let key in filter) {
             if (key === "name") {
                 result = result.filter(item => item.name.toLowerCase().includes(filter[key].toLowerCase()));
@@ -83,6 +97,7 @@ class ItemsList {
         for (let key in filter) {
             if (key === "display" && filter[key].length !== 0) {
                 console.log("Display")
+                // let innerArr = result;
                 result = result.filter(item => {
                     if (filter[key] == "<5" && item.display < 5) {
                         return item;
@@ -398,7 +413,7 @@ class RenderFilters {
         }
 
 
-        // this.sortFilter();
+        this.sortFilter(this.#filter);
         this.renderFilters(this.filterOptions);
     }
 
@@ -507,31 +522,47 @@ class RenderFilters {
     }
 
     // sort filter
-    // sortFilter() {
-    //     const formField = document.querySelector('.search-area');
-    //     const sortBtn = formField.querySelector('.search-area__sort');
-    //     const sortModal = formField.querySelector(".sortModal");
-    //     const defaultBtn = sortModal.querySelector('.default');
-    //     const ascBtn = sortModal.querySelector('.ascending');
-    //     const desBtn = sortModal.querySelector('.descending');
+    sortFilter() {
+        const formField = document.querySelector('.search-area');
+        const sortBtn = formField.querySelector('.search-area__sort');
+        const sortModal = formField.querySelector(".sortModal");
+        const defaultBtn = sortModal.querySelector('.default');
+        const ascBtn = sortModal.querySelector('.ascending');
+        const desBtn = sortModal.querySelector('.descending');
 
-    //     function toggleSortModal () {
-    //         sortModal.classList.toggle('Active');
-    //         console.log('clk')
-    //     }
+        function toggleSortModal () {
+            sortModal.classList.toggle('active');
+        }
+        sortBtn.addEventListener('click', toggleSortModal);
 
-    //     sortBtn.addEventListener('click', toggleSortModal)
-    // }
-                
+        function sortDefault () {
+            desBtn.classList.remove('active');
+            defaultBtn.classList.add('active');
+            ascBtn.classList.remove('active');
+            filter.setFilter('sort', 'default');             
+        }
+        defaultBtn.addEventListener('click', sortDefault);
 
+        
 
+        function sortAsc () {
+            desBtn.classList.remove('active');
+            defaultBtn.classList.remove('active');
+            ascBtn.classList.add('active');
+            // const {value} = ;
+            filter.setFilter('sort', 'ascending');  
+        }
+        ascBtn.addEventListener('click', sortAsc);
 
-
-        // this.selectSort.onchange = (event) => {
-        //     const { value } = event.target;
-        //     this.#filter.setFilter('sort', value);
-        // }
-    
+        function sortDes () {
+            desBtn.classList.add('active');
+            defaultBtn.classList.remove('active');
+            ascBtn.classList.remove('active');
+            filter.setFilter('sort', 'descending'); 
+        }
+        desBtn.addEventListener('click', sortDes);
+    }
+                    
 }
 
 

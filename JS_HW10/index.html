@@ -68,21 +68,15 @@
                 <!-- <button class="slider__btn product-card__btn">Add to cart</button> -->
             </div>
             <!-- input -->
-            <form class="search-area" action="#" method="#" id="form">
+            <form class="search-area" action="#" method="#">
                 <div class="sortModal">
                     <h3 class="sort-modal-header">Order</h3>
-                    <button class="sort-modal-btn default active">Default</button>
-                    <button class="sort-modal-btn ascending"><img class="sort-modal-btn__img-top" src="img/arrow_left.svg" alt="">Ascending</button>
-                    <button class="sort-modal-btn descending"><img class="sort-modal-btn__img-bottom" src="img/arrow_left.svg" alt="">Descending</button>
+                    <button class="sort-modal-btn default active" type="button">Default</button>
+                    <button class="sort-modal-btn ascending" type="button"><img class="sort-modal-btn__img-top" src="img/arrow_left.svg" alt="">Ascending</button>
+                    <button class="sort-modal-btn descending" type="button"><img class="sort-modal-btn__img-bottom" src="img/arrow_left.svg" alt="">Descending</button>
                 </div>
                 <input type="text" id="search" class="search-area__text-input" placeholder="Enter device name..." value="">
-                <button class="search-area__filter">
-                    <svg width="40" height="40" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <ellipse cx="20.2899" cy="20.936" rx="20.1561" ry="19.9574" fill="#0E49B5"/>
-                    <path d="M17.6865 28.6695H21.8857V26.5906H17.6865V28.6695ZM10.3379 16.1962V18.2751H29.2342V16.1962H10.3379ZM13.4873 23.4723H26.0848V21.3934H13.4873V23.4723Z" fill="white"/>
-                    </svg>
-                </button>
-                <button class="search-area__sort">
+                <button class="search-area__filter" type="button">
                     <svg width="40" height="40" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <ellipse cx="20.7035" cy="20.936" rx="20.1561" ry="19.9574" fill="#0E49B5"/>
                         <g clip-path="url(#clip0_4631_187)">
@@ -94,7 +88,15 @@
                         <rect width="25.1951" height="24.9467" fill="white" transform="translate(7.60205 8.96162)"/>
                         </clipPath>
                         </defs>
-                    </svg>                        
+                    </svg>   
+ 
+                </button>
+                <button class="search-area__sort" type="button">
+                    <svg width="40" height="40" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <ellipse cx="20.2899" cy="20.936" rx="20.1561" ry="19.9574" fill="#0E49B5"/>
+                        <path d="M17.6865 28.6695H21.8857V26.5906H17.6865V28.6695ZM10.3379 16.1962V18.2751H29.2342V16.1962H10.3379ZM13.4873 23.4723H26.0848V21.3934H13.4873V23.4723Z" fill="white"/>
+                        </svg>
+                     
                 </button>
             </form>
             <div class="product-section">
