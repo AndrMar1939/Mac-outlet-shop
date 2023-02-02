@@ -41,29 +41,18 @@ class ItemsList {
     constructor () {
         this.items = items.map(item => new Item(item));
     }
-    //____________________________________________________________________________find logic 
+    //____________________________________________________________________________find and filter logic 
     findItems(filter) {
-        let result = this.items;
-        
-        // sort by price
-        for (let key in filter) {
-            if (key === "sort") {               
-                if(filter[key] === 'default') {
-                    result = result.sort((a,b) => {return a.id - b.id});
-                } else if(filter[key] === 'ascending') {                    
-                    result = result.sort((a,b) => {return a.price - b.price})
-                } else if(filter[key] === 'descending') {                    
-                    result = result.sort((a,b) => {return b.price - a.price})
-                }
-            }          
-        }
 
-        
+        let result = this.items;     
+
+        // name
         for (let key in filter) {
             if (key === "name") {
                 result = result.filter(item => item.name.toLowerCase().includes(filter[key].toLowerCase()));
             }          
         }
+        // color
         for (let key in filter) {
             if (key === "color" && filter[key].length !== 0) {
                 result = result.filter(item => {
@@ -75,6 +64,7 @@ class ItemsList {
                 })
             }          
         }
+        // memory
         for (let key in filter) {
             if (key === "storage" && filter[key].length !== 0) {
                 result = result.filter(item => {
@@ -84,6 +74,7 @@ class ItemsList {
                 })
             }          
         }
+        // OS
         for (let key in filter) {
             if (key === "os" && filter[key].length !== 0) {
                 result = result.filter(item => {
@@ -93,31 +84,34 @@ class ItemsList {
                 })
             }          
         }
-        // Incorrectly. Work only one filter position with one button. Two buttons doesn't work due to 'return'
+
+        // correctly filter for screen size
         for (let key in filter) {
             if (key === "display" && filter[key].length !== 0) {
                 console.log("Display")
                 // let innerArr = result;
                 result = result.filter(item => {
-                    if (filter[key] == "<5" && item.display < 5) {
-                        return item;
-                    }
-                    if (filter[key] == '5-7' && item.display >= 5 && item.display < 7) {
-                        return item;
-                    }
-                    if (filter[key] == '7-12' && item.display >= 7 && item.display < 12) {
-                        return item;
-                    }
-                    if (filter[key] == '12-16' && item.display >= 12 && item.display < 16) {
-                        return item;
-                    }
-                    if (filter[key] == '+16' && item.display >= 16) {
-                        return item;
-                    }                    
+                    for (const ch of filter[key]) {
+                        if (ch == "<5" && item.display < 5) {
+                            return item;
+                        }
+                        if (ch == '5-7' && item.display >= 5 && item.display < 7) {
+                            return item;
+                        }
+                        if (ch == '7-12' && item.display >= 7 && item.display < 12) {
+                            return item;
+                        }
+                        if (ch == '12-16' && item.display >= 12 && item.display <= 16) {
+                            return item;
+                        }
+                        if (ch == '+16' && item.display > 16) {
+                            return item;
+                        }   
+                    }                 
                 });               
             }          
         }
-
+        // filter by price from to
         for (let key in filter) {
             if (key === "from") {
                 let numMin = itemsList.availablePrice[0];
@@ -141,6 +135,18 @@ class ItemsList {
                 result = result.filter(item => {
                     return item.price <= numMax;
                 }) 
+            }          
+        }
+        // sort by price asc desc
+        for (let key in filter) {
+            if (key === "sort") {               
+                 if(filter[key] === 'default') {
+                    result = result.sort((a,b) => {return a.id - b.id});
+                } else if(filter[key] === 'ascending') {                    
+                    result = result.sort((a,b) => {return a.price - b.price})
+                } else if(filter[key] === 'descending') {                    
+                    result = result.sort((a,b) => {return b.price - a.price})
+                }
             }          
         }
 
