@@ -224,7 +224,7 @@ class RenderCards {
             </div>     
         `;
 
-        // btn add to cart
+        // btn add to cart style and addToCart()
         const btnAddToCart = productCard.querySelector('.product-card__btn');
         const stockStatus = productCard.querySelector(".product-stock-status");
         
@@ -233,6 +233,11 @@ class RenderCards {
             btnAddToCart.classList.add("empty");
             btnAddToCart.disabled = true;   
         }
+
+        btnAddToCart.addEventListener('click', () => {
+            cart.addToCart(item);
+            renderCart.renderCartProducts(cart.items);
+        })
         
         // like button
         let likeOfProduct = productCard.querySelector(".product-like");
@@ -307,12 +312,16 @@ class RenderCards {
                     <button class="product-card__btn modal-window">Add to cart</button>
                 </div>
             `
-            // btn addToCart style in modal
+            // btn addToCart style in modal and addToCart()
             const btnModal = modalWindow.querySelector('.product-card__btn')
             if (item.orderInfo.inStock === 0) {
                 btnModal.classList.add("empty");
                 btnModal.disabled = true;                  
             }
+            btnModal.addEventListener('click', () => {
+                cart.addToCart(item);
+                renderCart.renderCartProducts(cart.items);
+            })
         }
 
         productCard.addEventListener("click", callModalWindow);
@@ -496,8 +505,7 @@ class RenderFilters {
 
 
             filterOptionMin.append(inputMinName, inputMinNumber);
-            filterOptionMax.append(inputMaxName, inputMaxNumber);
-        
+            filterOptionMax.append(inputMaxName, inputMaxNumber);     
             
             
             accordionContent.append(filterOptionMin, filterOptionMax);
@@ -547,9 +555,7 @@ class RenderFilters {
             ascBtn.classList.remove('active');
             filter.setFilter('sort', 'default');             
         }
-        defaultBtn.addEventListener('click', sortDefault);
-
-        
+        defaultBtn.addEventListener('click', sortDefault);        
 
         function sortAsc () {
             desBtn.classList.remove('active');
@@ -570,12 +576,171 @@ class RenderFilters {
     }
                     
 }
+// ___________________________________________________________________________________cart logic
+
+class Cart {
+    constructor() {
+        this.items = [];
+        this.name = 'Cart';
+    }
+
+    addToCart(item) {
+        const id = item.id;
+        const itemInCart = this.items.find(product => product.id === id);
+        if (itemInCart) {
+            if(itemInCart.amount < 4) {
+                itemInCart.amount++;
+            }
+            return itemInCart;
+        }
+        const newItemInCart = {
+            id,
+            item,
+            amount: 1,
+        }
+        return this.items.push(newItemInCart);
+    }
+
+    get totalAmount(){
+        return this.items.reduce((acc, item) => {
+            return acc + item.amount;
+        }, 0)
+    }
+    
+
+    get totalPrice(){
+        return this.items.reduce((acc, item) => {
+            return acc + item.amount * item.item.price;
+        }, 0)
+    }
+
+    decreaseItem(item){
+        const id = item.id;
+        const itemInCart = this.items.find(product => product.id === id);
+        if(itemInCart && itemInCart.amount >= 2) {
+            itemInCart.amount--;
+            
+        }
+    }
+
+    removeItem(item){
+        item.amount = 0;
+        let result = this.items.filter(it => it.amount > 0);
+        console.log(result);
+        this.items = result;
+
+        // cart counter
+        const cartCounter = document.querySelector('.cart-btn_number-of-products');
+        if(cart.totalAmount === 0) {
+            cartCounter.classList.remove('active');
+        }
+
+        return cart.items;
+
+    }
+}
+// _____________________________________________________________________-render cart
+class RenderCart{
+    constructor () {
+        this.containerForCart = document.querySelector('.cart-container__product');
+        this.renderCartProducts(cart.items);
+        this.openModalWindowCart();
+    }
+
+    renderOneCartProduct (item){
+        const cartProduct = document.createElement('div');
+        cartProduct.className = 'cart-product';
+        cartProduct.innerHTML = `
+            <img class="cart-product-img" src="${item.item.imgUrl}" alt="${item.item.name}">
+            <div class="cart-product-header">
+                <h2 class="cart-product-header_main-header">${item.item.name}</h2>
+                <h3 class="cart-product-header_second-header">${item.item.price} $</h3>
+            </div>
+            <div class="cart-product-buttons">
+                <button class="cart-product_decrease-btn"></button>
+                <p class="cart-product_amount">${item.amount}</p>
+                <button class="cart-product_add-btn"></button>
+                <button class="cart-product_remove-btn"><div class="cart-product_remove-btn_sign">sign</div></button>
+            </div>
+        `;
+        // total amount
+        const totalAmount = document.querySelector('.cart__section_bottom_total-amount');
+        totalAmount.innerHTML = `Total amount: ${cart.totalAmount} ptc.`;
+
+        // cart counter
+        const cartCounter = document.querySelector('.cart-btn_number-of-products');
+            if (cart.totalAmount > 0) {
+                cartCounter.classList.add('active');
+                cartCounter.innerHTML = `
+                    <h3>${cart.totalAmount}</h3>
+                `;
+            } else if(cart.totalAmount === 0) {
+                cartCounter.classList.remove('active');
+            }
+
+        // total price
+        const totalPrice = document.querySelector('.cart__section_bottom_total-price');
+        totalPrice.innerHTML = `Total price: ${cart.totalPrice}$`;
+
+        // decrease
+        const decreaseBtn = cartProduct.querySelector('.cart-product_decrease-btn');
+        decreaseBtn.addEventListener ('click', () => {
+            cart.decreaseItem(item); 
+            renderCart.renderCartProducts(cart.items);
+        });
+
+        // add
+        const addBtn = cartProduct.querySelector('.cart-product_add-btn');
+        addBtn.addEventListener ('click', () => {
+            cart.addToCart(item); 
+            renderCart.renderCartProducts(cart.items);
+        })
+
+        // remove
+        const removeBtn = cartProduct.querySelector('.cart-product_remove-btn');
+        removeBtn.addEventListener ('click', () => {
+            cart.removeItem(item); 
+            renderCart.renderCartProducts(cart.items);
+            totalAmount.innerHTML = `Total amount: ${cart.totalAmount} ptc.`;
+            totalPrice.innerHTML = `Total price: ${cart.totalPrice}$`;
+        })
+
+        return cartProduct;    
+    }
+
+    // render all products
+
+    renderCartProducts (items) {
+        this.containerForCart.innerHTML = '';
+        let products = items.map(item => {
+            return this.renderOneCartProduct(item);
+        })
+        return this.containerForCart.append(...products);
+    }
+
+    // toggle cart
+    openModalWindowCart () {
+        const cartBtn = document.querySelector('.cart-btn');
+        const cartWindow = document.querySelector('.cart-container');
+
+        cartBtn.addEventListener('click', () => {
+            cartWindow.classList.toggle('active');        
+        })
+
+    }
+
+}
 
 
 
 const itemsList = new ItemsList;
+
+const cart = new Cart;
+
+const renderCart = new RenderCart(cart);
  
-const renderCards = new RenderCards(itemsList);
+const renderCards = new RenderCards(itemsList, cart, renderCart);
+
 
 const filter = new Filter(itemsList, renderCards);
 
