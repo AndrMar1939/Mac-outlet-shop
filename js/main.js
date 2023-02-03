@@ -493,9 +493,11 @@ class RenderFilters {
                 this.#filter.setFilter('from', value);
             }
             inputMaxNumber.oninput = (event) => {
-                const { value } = event.target;
+                let { value } = event.target;
                 if (Number(value) >= itemsList.availablePrice[itemsList.availablePrice.length - 1]) {
                     event.target.value = itemsList.availablePrice[itemsList.availablePrice.length - 1];
+                } else if(!value) {
+                    value = Infinity;
                 }
                 this.#filter.setFilter('to', value);
             }
