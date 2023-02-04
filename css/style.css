@@ -359,12 +359,6 @@ and (max-width: 445px) {
   90% { opacity: 1 }
   100% { opacity: 0 }
 }
-/* .slider__btn {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, 0%);
-}  */
 
 
 /* ______________________________________________________________________________search input */
