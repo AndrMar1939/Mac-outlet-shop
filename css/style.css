@@ -350,17 +350,17 @@ and (max-width: 445px) {
 /* IMPORTANT! timer css and renderSlider delay must to be equal */
 .slider-img {
   max-width: 100%;
-  animation: fade 10s linear infinite;
+  /* animation: fade 10s linear infinite; */
 
 }
-@keyframes fade {
+/* @keyframes fade {
   0% { opacity: 0 }
   5% { opacity: 0; }
   10% { opacity: 1 }
   90% { opacity: 1 }
   95% { opacity: 0 }
   100% { opacity: 0 }
-}
+} */
 
 
 /* ______________________________________________________________________________search input */

@@ -744,7 +744,6 @@ class Slider {
     }
 
     renderSlider(){       
-        /* IMPORTANT! timer css and renderSlider delay must to be equal */ 
         const delay = 10000;
         let currentIndex = 0;
         const imgLinks = this.imgsUrl;
@@ -758,11 +757,6 @@ class Slider {
             }
         }, delay);
     }
-    
-
-    
-    
-
 }
 
 
