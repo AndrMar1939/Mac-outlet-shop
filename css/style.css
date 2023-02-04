@@ -353,18 +353,12 @@ and (max-width: 445px) {
   animation: fade 10s linear infinite;
 
 }
-@keyframes fade {
-  0% { opacity: 0 }
-  10% { opacity: 1 }
-  90% { opacity: 1 }
-  100% { opacity: 0 }
-}
-/* .slider__btn {
+.slider__btn {
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translate(-50%, 0%);
-}  */
+} 
 
 
 /* ______________________________________________________________________________search input */
