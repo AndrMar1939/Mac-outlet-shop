@@ -347,15 +347,24 @@ and (max-width: 445px) {
   margin-bottom: 24px;
   width: 100%;
 }
+/* IMPORTANT! timer css and renderSlider delay must to be equal */
 .slider-img {
   max-width: 100%;
+  animation: fade 10s linear infinite;
+
 }
-.slider__btn {
+@keyframes fade {
+  0% { opacity: 0 }
+  10% { opacity: 1 }
+  90% { opacity: 1 }
+  100% { opacity: 0 }
+}
+/* .slider__btn {
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translate(-50%, 0%);
-} 
+}  */
 
 
 /* ______________________________________________________________________________search input */
