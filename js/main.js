@@ -732,6 +732,38 @@ class RenderCart{
     }
 
 }
+// ___________________________________________________________________________________slider
+
+class Slider {
+    constructor() {
+        this.container = document.querySelector('.slider');
+        this.sliderImg = document.querySelector('.slider-img');
+        this.imgsUrl = ["banners/apple_tv_banner.png", "banners/air_pods_max_banner.jpg", "banners/airpods_pro_banner.png", "banners/ipad_air_banner.jpg", "banners/mac_book_banner.jpg", "banners/watch_banner.jpg"];
+        this.renderSlider();
+
+    }
+
+    renderSlider(){       
+        /* IMPORTANT! timer css and renderSlider delay must to be equal */ 
+        const delay = 10000;
+        let currentIndex = 0;
+        const imgLinks = this.imgsUrl;
+        const img = this.sliderImg;
+
+        setInterval(function() {
+            img.src = imgLinks[currentIndex];
+            currentIndex++;
+            if(currentIndex >= imgLinks.length) {
+                currentIndex = 0;
+            }
+        }, delay);
+    }
+    
+
+    
+    
+
+}
 
 
 
@@ -747,6 +779,10 @@ const renderCards = new RenderCards(itemsList, cart, renderCart);
 const filter = new Filter(itemsList, renderCards);
 
 const renderFilter = new RenderFilters(itemsList, filter);
+
+const slider = new Slider();
+
+// setInterval(slider.render(), 1000);
 
 
 // console.log(itemsList.availableColors) 
